@@ -17,10 +17,10 @@ int main()
 
   if (strcmp(targetDir, "/usr") == 0) {
 
-    if (mkdir("/usr/ports", 0777) == -1) {
+    if (mkdir("/usr/ports", 0755) == -1) {
       if (errno == EEXIST) {
         printf("Ports Already exist!\n");
-        exit(1);
+
       }  else if (errno == EACCES) {
         perror("Portie");
         printf("try running this with sudo/doas!\n");
@@ -39,7 +39,7 @@ int main()
     perror("MemError");
   }
 
-  char *args[] = {"git", "clone", "https://github.com/Ace120C/Portie-repo.git", NULL};
+  char *args[] = {"git", "clone", "https://github.com/Ace120C/Portie-repo.git", "/usr/ports", NULL};
   if (pid == 0) {
     execvp("git", args);
   } else {
