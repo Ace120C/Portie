@@ -1,51 +1,19 @@
+#include "bootstrap.h"
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <sys/wait.h>
-#include <sys/stat.h>
-#include <errno.h>
-
-
-int main()
+int main(int argc, char *argv[])
 {
-  printf("Checking /usr/ports....\n");
-  chdir("/usr");
+  if (argc > 1 && strcmp(argv[1], "bootstrap") == 0) {
+    bootstrap_ports();
+  } else {
+  printf("help \n");
+  }
+
   char targetDir[1024];
-  getcwd(targetDir, sizeof(targetDir));
-
-  if (strcmp(targetDir, "/usr") == 0) {
-
-    if (mkdir("/usr/ports", 0755) == -1) {
-      if (errno == EEXIST) {
-        printf("Ports Already exist!\n");
-
-      }  else if (errno == EACCES) {
-        perror("Portie");
-        printf("try running this with sudo/doas!\n");
-        exit(1);
-      }
-    }
+  if (strcmp(targetDir, "ports/") == 0) {
+    printf("you're already in ports\n");
   } else {
-    perror("Portie");
-    exit(1);
+  printf("you are not in ports\n");
   }
-
-  chdir("ports/");
-
-  pid_t pid = fork();
-  if (pid == -1) {
-    perror("MemError");
-  }
-
-  char *args[] = {"git", "clone", "https://github.com/Ace120C/Portie-repo.git", "/usr/ports", NULL};
-  if (pid == 0) {
-    execvp("git", args);
-  } else {
-    waitpid(pid, NULL, 0);
-  }
-
-  printf("Sucess!\n");
   return 0;
 }
