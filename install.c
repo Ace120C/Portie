@@ -1,12 +1,34 @@
 #include "install.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/wait.h>
 #include <unistd.h>
+#include <sys/stat.h>
 
 int install(char *iarg)
 {
   chdir("/usr/ports/");
   chdir(iarg);
+
+  struct stat st;
+
+  if (stat("src", &st) == 0) {
+    pid_t pid = fork();
+
+    if (pid == -1) {
+      perror("memerror");
+    }
+
+    char *install_args[] = {"make", "install", NULL};
+
+    if (pid == 0) {
+      execvp("make", install_args);
+    } else {
+      waitpid(pid, NULL, 0);
+    }
+
+    exit(0);
+  }
 
   pid_t pid = fork();
   if (pid == -1) {

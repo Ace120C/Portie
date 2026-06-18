@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include "search.h"
 #include "install.h"
+#include "remove.h"
 
 int main(int argc, char *argv[])
 {
@@ -15,6 +16,8 @@ int main(int argc, char *argv[])
     printf("Install Started!\n");
     install(argv[2]);
     printf("Install Complete.\n");
+  } else if (argc > 1 && strcmp(argv[1], "remove") == 0) {
+    port_remove(argv[2]);
   }
   return 0;
 }
